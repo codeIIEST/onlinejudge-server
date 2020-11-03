@@ -1,4 +1,4 @@
-module raydwaipayan/onlinejudge-server
+module github.com/raydwaipayan/onlinejudge-server
 
 go 1.13
 

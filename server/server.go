@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +9,8 @@ import (
 
 func main() {
 	app := fiber.New()
-	app.use(recover.New(), logger.New())
+	app.Use(recover.New(), logger.New())
+
 	router.SetupRoutes(app)
 	app.Listen(":3000")
 }
