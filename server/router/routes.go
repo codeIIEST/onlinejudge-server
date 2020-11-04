@@ -13,11 +13,11 @@ import (
 func SetupRoutes(app *fiber.App) {
 	user := app.Group("/user", logger.New(), limiter.New())
 
+	user.Post("/register", handler.Register)
 	user.Post("/login", handler.Login)
 	user.Use(jwtware.New(jwtware.Config{
-		SigningMethod: "RS256",
+		SigningMethod: "HS256",
 		SigningKey:    "test",
 	}))
 
-	user.Get("/signout", handler.Signout)
 }
