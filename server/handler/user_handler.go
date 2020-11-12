@@ -1,21 +1,18 @@
 package handler
 
 import (
+	"os"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
+	"github.com/raydwaipayan/onlinejudge-server/server/types"
 )
 
-// User user object
-type User struct {
-	Username string `json:"username" form:"name"`
-	Password string `json:"password" form:"password"`
-}
-
-//Register user registration handler
+//Register types.User registration handler
 func Register(c *fiber.Ctx) error {
-	u := new(User)
+	u := new(types.User)
 
 	if err := c.BodyParser(u); err != nil {
 		return c.SendStatus(fiber.StatusBadRequest)
@@ -24,9 +21,10 @@ func Register(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-//Login user login handler
+//Login types.User login handler
 func Login(c *fiber.Ctx) error {
-	u := new(User)
+	godotenv.Load()
+	u := new(types.User)
 
 	if err := c.BodyParser(u); err != nil {
 		return c.SendStatus(fiber.StatusBadRequest)
@@ -35,11 +33,11 @@ func Login(c *fiber.Ctx) error {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["name"] = u.Username
+	claims["email"] = u.Email
 	claims["admin"] = false
 	claims["exp"] = time.Now().Add(time.Hour * 96).Unix()
 
-	t, err := token.SignedString([]byte("secret"))
+	t, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
