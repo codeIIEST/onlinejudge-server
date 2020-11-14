@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-pg/migrations/v8"
 	"github.com/go-pg/pg/v10"
+	"github.com/joho/godotenv"
 )
 
 const usageText = `This program runs command on the db. Supported commands are:
@@ -20,12 +21,17 @@ const usageText = `This program runs command on the db. Supported commands are:
 `
 
 func main() {
+	//loading env variables
+	godotenv.Load()
+
 	flag.Usage = usage
 	flag.Parse()
 
 	db := pg.Connect(&pg.Options{
-		User:     "postgres",
-		Database: "db",
+		Addr:     ":5432",
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWD"),
+		Database: os.Getenv("DB_NAME"),
 	})
 
 	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
