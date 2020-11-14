@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"os"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
+	"github.com/raydwaipayan/onlinejudge-server/config"
 	"github.com/raydwaipayan/onlinejudge-server/server/types"
 )
 
@@ -22,24 +21,25 @@ func Register(c *fiber.Ctx) error {
 }
 
 //Login types.User login handler
-func Login(c *fiber.Ctx) error {
-	godotenv.Load()
-	u := new(types.User)
+func Login(conf *config.Config) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		u := new(types.User)
 
-	if err := c.BodyParser(u); err != nil {
-		return c.SendStatus(fiber.StatusBadRequest)
+		if err := c.BodyParser(u); err != nil {
+			return c.SendStatus(fiber.StatusBadRequest)
+		}
+
+		token := jwt.New(jwt.SigningMethodHS256)
+
+		claims := token.Claims.(jwt.MapClaims)
+		claims["email"] = u.Email
+		claims["admin"] = false
+		claims["exp"] = time.Now().Add(time.Hour * 96).Unix()
+
+		t, err := token.SignedString([]byte(conf.SecretKey))
+		if err != nil {
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+		return c.JSON(fiber.Map{"token": t})
 	}
-
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = u.Email
-	claims["admin"] = false
-	claims["exp"] = time.Now().Add(time.Hour * 96).Unix()
-
-	t, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
-	if err != nil {
-		return c.SendStatus(fiber.StatusInternalServerError)
-	}
-	return c.JSON(fiber.Map{"token": t})
 }

@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/go-pg/migrations/v8"
 	"github.com/go-pg/pg/v10"
-	"github.com/joho/godotenv"
+	"github.com/raydwaipayan/onlinejudge-server/config"
 )
 
 const usageText = `This program runs command on the db. Supported commands are:
@@ -21,17 +22,19 @@ const usageText = `This program runs command on the db. Supported commands are:
 `
 
 func main() {
-	//loading env variables
-	godotenv.Load()
+	conf, err := config.Read()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	flag.Usage = usage
 	flag.Parse()
 
 	db := pg.Connect(&pg.Options{
-		Addr:     ":5432",
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWD"),
-		Database: os.Getenv("DB_NAME"),
+		Addr:     fmt.Sprintf(":%s", conf.DbPort),
+		User:     conf.DbUser,
+		Password: conf.DbPass,
+		Database: conf.DbName,
 	})
 
 	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
