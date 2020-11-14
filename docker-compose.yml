@@ -32,5 +32,4 @@ services:
 
 networks:
   postgres:
-    driver: bridge
-    
+    driver: bridge   
