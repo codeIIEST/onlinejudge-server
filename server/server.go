@@ -1,19 +1,27 @@
 package main
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	config "github.com/raydwaipayan/onlinejudge-server/config"
+	"github.com/raydwaipayan/onlinejudge-server/config"
+	"github.com/raydwaipayan/onlinejudge-server/server/models"
 	router "github.com/raydwaipayan/onlinejudge-server/server/router"
 )
 
 func main() {
 	app := fiber.New()
-	conf, _ := config.Read()
+	conf, err := config.Read()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	app.Use(recover.New(), logger.New())
 
 	router.SetupRoutes(app, conf)
-	app.Listen(":3000")
+	models.InitDb(conf)
+	app.Listen(fmt.Sprintf(":%s", conf.Port))
 }

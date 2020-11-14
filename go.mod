@@ -11,4 +11,5 @@ require (
 	github.com/gofiber/jwt/v2 v2.0.1
 	github.com/joho/godotenv v1.3.0
 	github.com/spf13/viper v1.7.1
+	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9
 )
