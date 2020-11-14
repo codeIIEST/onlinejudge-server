@@ -7,6 +7,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	models "github.com/raydwaipayan/onlinejudge-server/server/models"
 	"github.com/raydwaipayan/onlinejudge-server/server/types"
 )
 
@@ -17,7 +18,7 @@ func Register(c *fiber.Ctx) error {
 	if err := c.BodyParser(u); err != nil {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
-
+	u.Create(models.DBConfigURL)
 	return c.SendStatus(fiber.StatusOK)
 }
 
