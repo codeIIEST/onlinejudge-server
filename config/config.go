@@ -30,6 +30,5 @@ func Read() (*Config, error) {
 
 	var conf Config
 	err := viper.Unmarshal(&conf)
-
 	return &conf, err
 }
