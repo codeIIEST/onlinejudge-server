@@ -5,12 +5,17 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
+GORUN=$(GOCMD) run
 GOFILES=./server/*.go
+MIGRATIONFILES=./migrations/*.go
 BINARY_PATH=./bin/
 BINARY_NAME=server
 BINARY_UNIX=$(BINARY_NAME)_unix
 
 all: test build
+
+migrate:
+		$(GORUN) $(MIGRATIONFILES)
 build: 
 		GOBIN=$(GOBIN) $(GOBUILD) -o $(BINARY_PATH)$(BINARY_NAME) -v $(GOFILES)
 test: 
