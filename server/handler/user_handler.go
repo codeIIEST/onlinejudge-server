@@ -22,7 +22,7 @@ func Register(c *fiber.Ctx) error {
 	pass := []byte(u.Password)
 	hashedPassword, err := bcrypt.GenerateFromPassword(pass, bcrypt.DefaultCost)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	u.Password = string(hashedPassword)
 	err = u.Create(models.DBConfigURL)
