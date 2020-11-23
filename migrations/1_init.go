@@ -8,8 +8,8 @@ import (
 
 func init() {
 	migrations.MustRegisterTx(func(db migrations.DB) error {
-		fmt.Println("creating table users...")
-		_, err := db.Exec(`CREATE TABLE users (
+		fmt.Println("CREATING TABLE: users")
+		_, userErr := db.Exec(`CREATE TABLE users (
 			id serial PRIMARY KEY,
 			first_name varchar(30),
 			last_name varchar(30),
@@ -19,7 +19,26 @@ func init() {
 			rating integer DEFAULT 1300,
 			createdAt timestamp
 		);`)
-		return err
+		fmt.Println("CREATING TABLE: contests")
+		_, contestsErr := db.Exec(`CREATE TABLE contests (
+			id serial PRIMARY KEY,
+			name varchar(30),
+			type varchar(30),
+			phase varchar(50),
+			duration_seconds integer,
+			start_time_seconds integer,
+			relative_time_seconds integer,
+			author text[],
+			problems text[]			
+		);`)
+		
+		if userErr != nil {
+			return userErr
+		}
+		if contestsErr != nil {
+			return contestsErr
+		}
+		return nil
 	}, func(db migrations.DB) error {
 		fmt.Println("dropping table users...")
 		_, err := db.Exec(`DROP TABLE users`)

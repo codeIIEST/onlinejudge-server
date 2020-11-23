@@ -41,3 +41,9 @@ func (u *User) Delete(db *pg.DB) error {
 	_, err := db.Model(u).Delete()
 	return err
 }
+
+// ContestCreate Create Contest
+func (c *Contest) ContestCreate(db *pg.DB) error {
+	_, err := db.Model(c).Insert()
+	return err
+}

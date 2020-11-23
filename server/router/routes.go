@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 
 	jwtware "github.com/gofiber/jwt/v2"
 	config "github.com/raydwaipayan/onlinejudge-server/config"
@@ -12,7 +11,8 @@ import (
 
 // SetupRoutes initiates the fiber router
 func SetupRoutes(app *fiber.App, conf *config.Config) {
-	user := app.Group("/user", logger.New(), limiter.New())
+	api := app.Group("/api/v1", limiter.New())
+	user := api.Group("/user")
 	user.Post("/register", handler.Register)
 	user.Post("/login", handler.Login(conf))
 	user.Use(jwtware.New(jwtware.Config{
@@ -20,4 +20,6 @@ func SetupRoutes(app *fiber.App, conf *config.Config) {
 		SigningKey:    []byte(conf.SecretKey),
 	}))
 
+	contest := api.Group("/contest")
+	contest.Post("/create", handler.CreateContest)
 }
