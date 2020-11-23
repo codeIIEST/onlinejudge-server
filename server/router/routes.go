@@ -7,11 +7,13 @@ import (
 	jwtware "github.com/gofiber/jwt/v2"
 	config "github.com/raydwaipayan/onlinejudge-server/config"
 	handler "github.com/raydwaipayan/onlinejudge-server/server/handler"
+	middlewares "github.com/raydwaipayan/onlinejudge-server/server/middlewares"
 )
 
 // SetupRoutes initiates the fiber router
 func SetupRoutes(app *fiber.App, conf *config.Config) {
 	api := app.Group("/api/v1", limiter.New())
+	
 	user := api.Group("/user")
 	user.Post("/register", handler.Register)
 	user.Post("/login", handler.Login(conf))
@@ -21,5 +23,5 @@ func SetupRoutes(app *fiber.App, conf *config.Config) {
 	}))
 
 	contest := api.Group("/contest")
-	contest.Post("/create", handler.CreateContest)
+	contest.Post("/create", middlewares.VerifyJWT(conf), handler.CreateContest)
 }

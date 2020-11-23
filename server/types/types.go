@@ -28,7 +28,7 @@ type Problem struct {
 	Index     string   `json:"index"`
 	Name      string   `json:"name"`
 	Rating    int32    `json:"rating"`
-	Tags      []string `json:"tags"`
+	Tags      []string `json:"tags" pg:",array"`
 }
 
 // SubmissionData Table struct
@@ -53,9 +53,9 @@ type TestResult struct {
 	Status  string    `json:"status"`
 	Message string    `json:"message"`
 	Time    []float64 `json:"time"`
-	Memory  []float64 `json:"memory"`
-	Result  []string  `json:"result"`
-	Error   []string  `json:"error"`
+	Memory  []float64 `json:"memory" pg:",array"`
+	Result  []string  `json:"result" pg:",array"`
+	Error   []string  `json:"error" pg:",array"`
 }
 
 // TestData Table struct
@@ -66,8 +66,8 @@ type TestData struct {
 	Path       string   `json:"path"`
 	Image      string   `json:"image"`
 	TestCount  int      `json:"testcount"`
-	InputData  []string `json:"inputdata"`
-	OutputData []string `json:"outputdata"`
+	InputData  []string `json:"inputdata" pg:",array"`
+	OutputData []string `json:"outputdata" pg:",array"`
 	TimeLimit  int      `json:"timelimit"`
 	MemLimit   int64    `json:"memlimit"`
 }

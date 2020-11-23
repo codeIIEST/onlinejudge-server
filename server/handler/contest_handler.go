@@ -16,5 +16,5 @@ func CreateContest(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
-	return c.JSON(u)
+	return c.SendStatus(fiber.StatusCreated)
 }
