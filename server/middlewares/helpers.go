@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
@@ -21,7 +20,6 @@ func VerifyJWT(conf *config.Config) fiber.Handler {
 
 			return []byte(conf.SecretKey), nil
 		})
-		log.Print(err)
 		if err != nil {
 			return c.SendStatus(fiber.StatusUnauthorized)
 		}

@@ -13,7 +13,7 @@ import (
 // SetupRoutes initiates the fiber router
 func SetupRoutes(app *fiber.App, conf *config.Config) {
 	api := app.Group("/api/v1", limiter.New())
-	
+
 	user := api.Group("/user")
 	user.Post("/register", handler.Register)
 	user.Post("/login", handler.Login(conf))
@@ -24,4 +24,7 @@ func SetupRoutes(app *fiber.App, conf *config.Config) {
 
 	contest := api.Group("/contest")
 	contest.Post("/create", middlewares.VerifyJWT(conf), handler.CreateContest)
+
+	problems := api.Group("/problem")
+	problems.Post("/:cid/submit", middlewares.VerifyJWT(conf), handler.CreateProblem)
 }

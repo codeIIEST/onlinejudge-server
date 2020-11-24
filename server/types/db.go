@@ -47,3 +47,28 @@ func (c *Contest) ContestCreate(db *pg.DB) error {
 	_, err := db.Model(c).Insert()
 	return err
 }
+
+// CheckContestExists Checks if contests exists
+func (c *Contest) CheckContestExists(db *pg.DB, cid string) (bool, error) {
+	contest := new(Contest)
+	err := db.Model(contest).Table("contests").Where("contests.id = ?", cid).Limit(1).Select()
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+
+}
+
+// CreateProblem creates problem
+func (p *Problem) CreateProblem(db *pg.DB) (bool, error) {
+	_, err := db.Model(p).Insert()
+	if err != nil {
+		pgErr, ok := err.(pg.Error)
+		if ok && pgErr.IntegrityViolation() {
+			return true, err
+		} else if pgErr.Field('S') == "PANIC" {
+			return false, err
+		}
+	}
+	return false, nil
+}

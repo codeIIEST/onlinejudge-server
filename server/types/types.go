@@ -18,17 +18,18 @@ type Contest struct {
 	DurationSeconds     int32    `json:"durationseconds"`
 	StartTimeSeconds    int32    `json:"starttimeseconds"`
 	RelativeTimeSeconds int32    `json:"relativetimeseconds"`
-	Author              []string `json:"author" pg:",array"`  
+	Author              []string `json:"author" pg:",array"`
 	Problems            []string `json:"problems" pg:",array"`
 }
 
 // Problem Table struct
 type Problem struct {
-	ContestID int32    `json:"contestid"`
+	ContestID string   `json:"contestid"`
 	Index     string   `json:"index"`
 	Name      string   `json:"name"`
 	Rating    int32    `json:"rating"`
 	Tags      []string `json:"tags" pg:",array"`
+	Statement string   `json:"statement"`
 }
 
 // SubmissionData Table struct
