@@ -27,4 +27,7 @@ func SetupRoutes(app *fiber.App, conf *config.Config) {
 
 	problems := api.Group("/problem")
 	problems.Post("/:cid/submit", middlewares.VerifyJWT(conf), handler.CreateProblem)
+	problems.Get("/:cid/all", handler.GetAllProblems)
+	problems.Get("/:index", handler.GetProblem)
+
 }
