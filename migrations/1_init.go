@@ -35,7 +35,8 @@ func init() {
 			start_time_seconds integer,
 			relative_time_seconds integer,
 			author text[],
-			problems text[]			
+			problems text[],
+			users text[]			
 			);`)
 
 		if contestsErr != nil {

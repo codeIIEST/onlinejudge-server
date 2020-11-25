@@ -20,6 +20,9 @@ type Contest struct {
 	RelativeTimeSeconds int32    `json:"relativetimeseconds"`
 	Author              []string `json:"author" pg:",array"`
 	Problems            []string `json:"problems" pg:",array"`
+	Users               []string `json:"users" pg:",array"`
+	ID                  string   `json:"id"`
+	tableName           struct{} `pg:",discard_unknown_columns"`
 }
 
 // Problem Table struct
@@ -30,6 +33,9 @@ type Problem struct {
 	Rating    int32    `json:"rating"`
 	Tags      []string `json:"tags" pg:",array"`
 	Statement string   `json:"statement"`
+	ID        string   `json:"id"`
+	CreatedAt string   `json:"createdat"`
+	tableName struct{} `pg:",discard_unknown_columns"`
 }
 
 // SubmissionData Table struct
@@ -71,4 +77,9 @@ type TestData struct {
 	OutputData []string `json:"outputdata" pg:",array"`
 	TimeLimit  int      `json:"timelimit"`
 	MemLimit   int64    `json:"memlimit"`
+}
+
+// UserHandle UserHandle struct
+type UserHandle struct {
+	Handle string `json:"handle"`
 }

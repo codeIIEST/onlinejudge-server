@@ -24,6 +24,8 @@ func SetupRoutes(app *fiber.App, conf *config.Config) {
 
 	contest := api.Group("/contest")
 	contest.Post("/create", middlewares.VerifyJWT(conf), handler.CreateContest)
+	contest.Post("/:cid/register", middlewares.VerifyJWT(conf), handler.RegisterContest)
+	contest.Get("/all", handler.GetAllContests)
 
 	problems := api.Group("/problem")
 	problems.Post("/:cid/submit", middlewares.VerifyJWT(conf), handler.CreateProblem)

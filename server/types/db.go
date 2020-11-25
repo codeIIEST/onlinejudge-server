@@ -49,19 +49,18 @@ func (c *Contest) ContestCreate(db *pg.DB) error {
 }
 
 // UpdateContest updates contest
-func (c *Contest) UpdateContest(db *pg.DB, cid string) error {
-	_, err := db.Model(c).Table("contests").Where("contests.id = ?", cid).Update()
+func (c *Contest) UpdateContest(db *pg.DB) error {
+	_, err := db.Model(c).Table("contests").WherePK().Update()
 	return err
 }
 
 // CheckContestExists Checks if contests exists
-func (c *Contest) CheckContestExists(db *pg.DB, cid string) (*Contest, bool, error) {
-	contest := new(Contest)
-	err := db.Model(contest).Table("contests").Where("contests.id = ?", cid).Limit(1).Select()
+func (c *Contest) CheckContestExists(db *pg.DB) (bool, error) {
+	_, err := db.Query(c, `SELECT * FROM contests WHERE id = ?`, c.ID)
 	if err != nil {
-		return contest, false, err
+		return false, err
 	}
-	return contest, true, nil
+	return true, nil
 
 }
 
@@ -80,24 +79,30 @@ func (p *Problem) CreateProblem(db *pg.DB) (bool, error) {
 }
 
 // GetProblem gets the problem
-func (p *Problem) GetProblem(db *pg.DB) (*Problem, bool, error) {
-	problem := &Problem{
-		Index: p.Index,
-	}
-
-	err := db.Model(problem).Table("problems").Where("problems.index = ?", p.Index).Limit(1).Select()
+func (p *Problem) GetProblem(db *pg.DB) (bool, error) {
+	_, err := db.Query(p, `SELECT * FROM problems WHERE index = ?`, p.Index)
 	if err != nil {
 		_, ok := err.(pg.Error)
 		if !ok {
-			return problem, true, err
+			return true, err
 		}
 	}
-	return problem, false, nil
+	if len(p.ID) == 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 // GetAllProblems gets all problems from db
 func (p *Problem) GetAllProblems(db *pg.DB, cid string) (*[]Problem, error) {
 	var problem []Problem
-	err := db.Model(&problem).Table("problems").Where("problems.contest_id = ?", cid).Distinct().Select()
+	_, err := db.Query(&problem, `SELECT * FROM problems WHERE contest_id = ?`, cid)
 	return &problem, err
+}
+
+// GetAllContests gets all contests from DB
+func (c *Contest) GetAllContests(db *pg.DB) (*[]Contest, error) {
+	var contests []Contest
+	_, err := db.Query(&contests, `SELECT * FROM contests`)
+	return &contests, err
 }

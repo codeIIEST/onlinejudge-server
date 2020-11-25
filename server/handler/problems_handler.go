@@ -11,7 +11,8 @@ func CreateProblem(c *fiber.Ctx) error {
 
 	cid := c.Params("cid")
 	contest := new(types.Contest)
-	contestData, found, _ := contest.CheckContestExists(models.DBConfigURL, cid)
+	contest.ID = cid
+	found, _ := contest.CheckContestExists(models.DBConfigURL)
 
 	if !found {
 		return c.SendStatus(fiber.StatusNotFound)
@@ -32,8 +33,8 @@ func CreateProblem(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	// Appends problem to contest problems
-	contestData.Problems = append(contestData.Problems, problem.Index)
-	updateErr := contestData.UpdateContest(models.DBConfigURL, cid)
+	contest.Problems = append(contest.Problems, problem.Index)
+	updateErr := contest.UpdateContest(models.DBConfigURL)
 	if updateErr != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -46,15 +47,15 @@ func GetProblem(c *fiber.Ctx) error {
 	index := c.Params("index")
 	problem := new(types.Problem)
 	problem.Index = index
-	data, notFound, err := problem.GetProblem(models.DBConfigURL)
+	notFound, err := problem.GetProblem(models.DBConfigURL)
 
+	if notFound {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
 	if err != nil {
-		if notFound {
-			return c.SendStatus(fiber.StatusNotFound)
-		}
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
-	return c.JSON(data)
+	return c.JSON(problem)
 }
 
 // GetAllProblems gets all problems for particular cid
