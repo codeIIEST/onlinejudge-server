@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/raydwaipayan/onlinejudge-server/server/middlewares"
+	"github.com/raydwaipayan/onlinejudge-server/server/helpers"
 	"github.com/raydwaipayan/onlinejudge-server/server/models"
 	"github.com/raydwaipayan/onlinejudge-server/server/types"
 )
@@ -40,7 +40,7 @@ func RegisterContest(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	contest.Users = middlewares.UniqueHandles(append(contest.Users, handle.Handle))
+	contest.Users = helpers.UniqueElements(append(contest.Users, handle.Handle))
 
 	err := contest.UpdateContest(models.DBConfigURL)
 
